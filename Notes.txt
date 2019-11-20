@@ -1,0 +1,48 @@
+1. Display texture
+
+
+
+Graphics
+Physics
+^ make super modular, make it easy to test each step of the way
+
+3) Start 
+Definitely important:
+https://learnopengl.com/Advanced-OpenGL/Framebuffers
+
+Start writing from scratch
+
+
+1. Make a window
+
+
+-------------------------------
+-------------------------------
+
+
+Algorithm:
+
+Rendering ice basically
+
+
+When creating normal image, use some kind of interpolation method
+	Normal avergae to make it smooth across each normal image
+	spline, etc.
+When considering layers
+	Consider: https://learnopengl.com/Advanced-OpenGL/Depth-testing
+	Finding out depth using formulas shown here
+	Use that in computation -> maybe adjust angle for refract, etc.
+When trying to copy buffers are sub sample them:
+	https://learnopengl.com/Advanced-OpenGL/Advanced-Data
+
+
+Maybe through some math combine into one lens at the end? Then render that?
+Instead of all of these lens going through one at a time
+
+-------------------------------
+-------------------------------
+Geometry shaders I guess if you want to visualize normals
+https://learnopengl.com/Advanced-OpenGL/Geometry-Shader
+
+Uniform buffer objects, (definitely) the tech demo split screen thing:
+https://learnopengl.com/Advanced-OpenGL/Advanced-GLSL
