@@ -121,6 +121,7 @@ void ScreenBuffer::drawToTexture() const
 
 void ScreenBuffer::drawTextureToScreen() const
 {
+
 	ScreenBuffer::bindDefaultBuffer();
 	ScreenBuffer::clearColor(clear_color);
 	ScreenBuffer::clearBuffer(true, false, false);
