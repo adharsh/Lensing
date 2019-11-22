@@ -54,8 +54,9 @@ void main()
 	for (int i = 0; i < 9; i++)
 		col += sampleTex[i] * kernel[i];
 
-	color = vec4(col, 1.0);
+//	color = vec4(col, 1.0);
 	//color = texture(screenTexture, TexCoords);
+	color = vec4(1, 0, 0, 1.0);
 
 //	if (gl_FragCoord.x < int(512 * 3 /2))
 //		color = texture(screenTexture, TexCoords);

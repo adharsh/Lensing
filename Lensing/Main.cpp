@@ -16,7 +16,7 @@ int main()
 	shader.addFragmentShader("res/Lensing.frag");
 	shader.compileShader();
 
-	ScreenBuffer screen = ScreenBuffer("res/Screen.vert", "res/Screen.frag", win.getWidth(), win.getHeight(), win.getClearColor(), false, false);
+	//ScreenBuffer screen = ScreenBuffer("res/Screen.vert", "res/Screen.frag", win.getWidth(), win.getHeight(), win.getClearColor(), false, false);
 
 	Texture texture = Texture("res/horizontally_flipped_grid.jpg");
 	std::vector<GLfloat> data =
@@ -58,8 +58,8 @@ int main()
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//while (!win.closed())
 	//{
-	screen.initalize();
-	screen.bindBuffer(); //bind to different frame buffer (off screen rendering)
+	ScreenBuffer::initalize();
+	//screen.bindBuffer(); //bind to different frame buffer (off screen rendering)
 
 	shader.bind();
 	glBindVertexArray(VAO);
@@ -76,12 +76,12 @@ int main()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	shader.unbind();
 		
-	screen.drawTextureToScreen(); //code will now bind to default buffer and render to screen
+	//screen.drawTextureToScreen(); //code will now bind to default buffer and render to screen
 
 	//win.update();
 	//}
 
-	screen.bindDefaultBuffer();
+	//screen.bindDefaultBuffer();
 	//screen.bindBuffer();
 	GLubyte* result_img = new GLubyte[win.getWidth() * win.getHeight() * 3]; //1 byte per color
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

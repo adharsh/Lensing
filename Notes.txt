@@ -1,5 +1,6 @@
-1. Display texture
-
+Get loop going
+Pass in different normal images each time
+Would represent each layer
 
 
 Graphics
