@@ -56,10 +56,10 @@ int main()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 
-	Texture texture = Texture("res/horizontally_flipped_grid.jpg");
+	Texture texture = Texture("res/horizontally_flipped_grid.jpg", false);
 	win.clear();
 	
-	for(unsigned int i = 1; i <= n_layers; i++)
+	for(unsigned int i = 1; i <= 1; i++)
 	{
 		shader.bind();
 		glBindVertexArray(VAO);
