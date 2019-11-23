@@ -36,6 +36,8 @@ Texture::Texture(const std::string& filepath, bool interpolate)
 	}
 	
 	glBindTexture(GL_TEXTURE_2D, 0);
+	
+	with_stb_load = true;
 }
 
 void Texture::load_data(const std::string& filepath, unsigned char** out_data, int* out_width, int* out_height, int* out_num_channels)
@@ -52,10 +54,18 @@ void Texture::write_to_bmp(const std::string& filepath)
 
 Texture::Texture(unsigned char* data, int width, int height, int num_channels, bool interpolate)
 {
-	this->data = data;
 	this->width = width;
 	this->height = height;
 	this->num_channels = num_channels;
+
+//  deep copy
+	this->data = (unsigned char*) malloc(width * height * num_channels * sizeof(char));
+	memcpy(this->data, data, width * height * num_channels * sizeof(char));
+
+	//for (int i = 0; i < 5; i++)
+	//	std::cout << (int)(data[i]) << " ";
+	//std::cout << std::endl;
+
 
 	glGenTextures(1, &texture_id);
 	glBindTexture(GL_TEXTURE_2D, texture_id);
@@ -81,6 +91,8 @@ Texture::Texture(unsigned char* data, int width, int height, int num_channels, b
 	}
 	
 	glBindTexture(GL_TEXTURE_2D, 0);
+	
+	with_stb_load = false;
 }
 
 const std::vector<int> Texture::getPixelValue(unsigned int row, unsigned int col) const
@@ -94,16 +106,15 @@ const std::vector<int> Texture::getPixelValue(unsigned int row, unsigned int col
 		return {r, g, b, pixelOffset[3]};
 	
 	return {r, g, b};
-};
-
-Texture::~Texture()
-{
-	if(data)
-		stbi_image_free(data);
-	glDeleteTextures(1, &texture_id);
 }
 
-void Texture::deleteTexture() const
+void Texture::deleteTexture()
 {
+	if (data && with_stb_load)
+		stbi_image_free(data);
+	else if (data)
+		free(data);
+
+	data = nullptr;
 	glDeleteTextures(1, &texture_id);
 }

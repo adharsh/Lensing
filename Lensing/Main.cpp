@@ -1,14 +1,17 @@
 #include <vector>
+#include <string>
+#include <iostream>
 
 #include "Window.h"
 #include "Shader.h"
 #include "Texture.h"
-#include "ScreenBuffer.h"
 
 #include <stb/stb_image_write.h>
 
 int main()
 {
+	unsigned int n_layers = 10;
+
 	Window win = Window("Depth of Field", 2.5 * 512, 2.5 * 512, glm::vec4(0, 1, 1, 0));
 
 	Shader shader = Shader();
@@ -16,9 +19,6 @@ int main()
 	shader.addFragmentShader("res/Lensing.frag");
 	shader.compileShader();
 
-	//ScreenBuffer screen = ScreenBuffer("res/Screen.vert", "res/Screen.frag", win.getWidth(), win.getHeight(), win.getClearColor(), false, false);
-
-	Texture texture = Texture("res/horizontally_flipped_grid.jpg");
 	std::vector<GLfloat> data =
 	{
 		//Positions		UVs
@@ -55,42 +55,43 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//while (!win.closed())
-	//{
-	ScreenBuffer::initalize();
-	//screen.bindBuffer(); //bind to different frame buffer (off screen rendering)
 
-	shader.bind();
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-	//glActiveTexture(GL_TEXTURE0);
-	texture.bind();
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-	texture.unbind();
-
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	shader.unbind();
-		
-	//screen.drawTextureToScreen(); //code will now bind to default buffer and render to screen
-
-	//win.update();
-	//}
-
-	//screen.bindDefaultBuffer();
-	//screen.bindBuffer();
-	GLubyte* result_img = new GLubyte[win.getWidth() * win.getHeight() * 3]; //1 byte per color
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glPixelStorei(GL_PACK_ALIGNMENT, 1);
-	glReadPixels(0, 0, win.getWidth(), win.getHeight(), GL_RGB, GL_UNSIGNED_BYTE, result_img);
-
-	stbi_flip_vertically_on_write(1); //non-zero value
-	stbi_write_bmp("res/test.bmp", win.getWidth(), win.getHeight(), 3, result_img);
+	Texture texture = Texture("res/horizontally_flipped_grid.jpg");
+	win.clear();
 	
+	for(unsigned int i = 1; i <= n_layers; i++)
+	{
+		shader.bind();
+		glBindVertexArray(VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
+		texture.bind();
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+		texture.unbind();
+
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		shader.unbind();
+	
+		unsigned char* result_img = new unsigned char[win.getWidth() * win.getHeight() * 3]; //1 byte per color
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		glReadPixels(0, 0, win.getWidth(), win.getHeight(), GL_RGB, GL_UNSIGNED_BYTE, result_img);
+
+		stbi_flip_vertically_on_write(1); //non-zero value
+		stbi_write_bmp(std::string("output/result" + std::to_string(i) + ".bmp").c_str(), win.getWidth(), win.getHeight(), 3, result_img);
+
+		texture.deleteTexture();
+		if(i != n_layers)
+			texture = Texture(result_img, win.getWidth(), win.getHeight(), 3);
+
+		delete result_img;
+	}
+
+	win.update();
+
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);

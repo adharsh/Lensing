@@ -13,11 +13,11 @@ private:
 	int num_channels; //3 for rgb, 4 for rgba
 	unsigned char* data;
 	std::string filepath;
+	bool with_stb_load;
 public:
 	Texture(const std::string& filepath, bool interpolate = true);
 	Texture(unsigned char* data, int width, int height, int num_channels, bool interpolate = true);
-	~Texture();
-	void deleteTexture() const;
+	void deleteTexture();
 
 	void write_to_bmp(const std::string& filepath);
 
