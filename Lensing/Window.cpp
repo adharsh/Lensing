@@ -112,7 +112,6 @@ void Window::getScrollOffset(double& xvalue, double& yvalue) const
 	yvalue = s_yoffset;
 }
 
-
 void Window::clear() const
 {
 	//TODO: change so specific for each framebuffer

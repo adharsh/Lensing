@@ -12,7 +12,7 @@ int main()
 {
 	unsigned int n_layers = 10;
 
-	Window win = Window("Depth of Field", 2.5 * 512, 2.5 * 512, glm::vec4(0, 1, 1, 0));
+	Window win = Window("Depth of Field", 300, 300, glm::vec4(0, 1, 1, 0));
 	//Window win = Window("Depth of Field", 512, 512, glm::vec4(0, 1, 1, 0));
 
 	Shader shader = Shader();
@@ -62,9 +62,9 @@ int main()
 	std::vector<float> frame(3 * win.getWidth() * win.getHeight());
 	for (int i = 0; i < 3 * win.getWidth() * win.getHeight(); i += 3)
 	{
-		frame[i] = 1;
-		frame[i + 1] = 0;
-		frame[i + 2] = 1;
+		frame[i + 0] = 1;
+		frame[i + 1] = 1;
+		frame[i + 2] = 0;
 	}
 
 	//FILE* fp;
