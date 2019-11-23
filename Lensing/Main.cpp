@@ -13,6 +13,7 @@ int main()
 	unsigned int n_layers = 10;
 
 	Window win = Window("Depth of Field", 2.5 * 512, 2.5 * 512, glm::vec4(0, 1, 1, 0));
+	//Window win = Window("Depth of Field", 512, 512, glm::vec4(0, 1, 1, 0));
 
 	Shader shader = Shader();
 	shader.addVertexShader("res/Lensing.vert");
@@ -54,14 +55,42 @@ int main()
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-
+	
 	Texture texture = Texture("res/horizontally_flipped_grid.jpg", false);
 	win.clear();
 	
+	std::vector<float> frame(3 * win.getWidth() * win.getHeight());
+	for (int i = 0; i < 3 * win.getWidth() * win.getHeight(); i += 3)
+	{
+		frame[i] = 1;
+		frame[i + 1] = 0;
+		frame[i + 2] = 1;
+	}
+
+	//FILE* fp;
+	//fp = fopen(std::string("res/butterfly_" + std::to_string(width) + ".planar").c_str(), "rb");
+	//fread(&frame[0], sizeof(float), 3 * width * height, fp);
+	//fclose(fp);
+
+	shader.bind();
+	shader.setUniform1f("width", win.getWidth());
+	shader.setUniform1f("height", win.getHeight());
+	shader.unbind();
+
+	GLuint ssbo;
+
 	for(unsigned int i = 1; i <= 1; i++)
 	{
 		shader.bind();
+
+//		Sending normal map as ssbo
+		glGenBuffers(1, &ssbo);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, 3 * sizeof(float) * win.getWidth() * win.getHeight(), &frame[0], GL_STATIC_DRAW);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, ssbo);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+//      Rendering quad
 		glBindVertexArray(VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -91,10 +120,11 @@ int main()
 	}
 
 	win.update();
-
+	system("pause");
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
+	glDeleteBuffers(1, &ssbo);
 
 	return 0;
 
