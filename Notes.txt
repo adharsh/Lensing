@@ -1,4 +1,8 @@
-Get loop going
+try accessing it like in foveated rendering, as 3 seperate colors, planar
+should it be a single float or array of floats
+should a constant be applied to define array size
+check very siple but other working implementations of ssb, i got the weird side artificats in previous image, may be rounding
+Double check ssbo from Render
 Pass in different normal images each time
 Would represent each layer
 

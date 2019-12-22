@@ -58,7 +58,18 @@ int main()
 	
 	Texture texture = Texture("res/horizontally_flipped_grid.jpg", false);
 	win.clear();
+#if 1
+	std::vector<float> frame(3 * win.getWidth() * win.getHeight());
+	int i;
+	for (i = 0; i < 1 * win.getWidth() * win.getHeight(); i++)
+		frame[i + 0] = 1;
+
+	for (; i < 2 * win.getWidth() * win.getHeight(); i++)
+		frame[i + 0] = 0;
 	
+	for (; i < 3 * win.getWidth() * win.getHeight(); i++)
+		frame[i + 0] = 1;
+#else
 	std::vector<float> frame(3 * win.getWidth() * win.getHeight());
 	for (int i = 0; i < 3 * win.getWidth() * win.getHeight(); i += 3)
 	{
@@ -66,6 +77,8 @@ int main()
 		frame[i + 1] = 1;
 		frame[i + 2] = 0;
 	}
+#endif
+
 
 	//FILE* fp;
 	//fp = fopen(std::string("res/butterfly_" + std::to_string(width) + ".planar").c_str(), "rb");
@@ -79,7 +92,7 @@ int main()
 
 	GLuint ssbo;
 
-	for(unsigned int i = 1; i <= 1; i++)
+	for(unsigned int i = 1; i <= n_layers; i++)
 	{
 		shader.bind();
 
@@ -120,7 +133,7 @@ int main()
 	}
 
 	win.update();
-	system("pause");
+	//system("pause");
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);

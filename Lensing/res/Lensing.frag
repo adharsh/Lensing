@@ -13,11 +13,16 @@ layout(std430, binding = 2) buffer Normal_Map
 
 void main()
 {
-	vec2 pos = vec2((width - 1) * uv.x, (1 - uv.y) * (height - 1));
-//	pos += 0.5f;
-	int pixelOffset = int((pos.y * width + pos.x) * 3);
-	vec4 pix = vec4( frame[pixelOffset], frame[pixelOffset + 1], frame[pixelOffset + 2], 1);
-	
+
+	ivec2 pos = ivec2((width - 1) * uv.x, (1 - uv.y) * (height - 1));
+	int pixelOffset = pos.y * int(width) + pos.x;
+	int dim = int(width * height);
+	vec4 pix = vec4( frame[pixelOffset], frame[pixelOffset + dim], frame[pixelOffset + 2 * dim], 1);
+
+//	vec2 pos = vec2((width - 1) * uv.x, (height - 1) * (1 - uv.y));
+//	int pixelOffset = int((pos.y * width + pos.x) * 3);
+//	vec4 pix = vec4( frame[pixelOffset], frame[pixelOffset + 1], frame[pixelOffset + 2], 1);
+
 	gl_FragColor = pix;
 //	gl_FragColor = (texture(texture1, uv) + pix)/2;
 //	gl_FragColor = vec4(uv, 0, 1);
