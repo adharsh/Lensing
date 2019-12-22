@@ -10,7 +10,7 @@
 
 int main()
 {
-	unsigned int n_layers = 10;
+	unsigned int n_layers = 2;
 
 	Window win = Window("Depth of Field", 300, 300, glm::vec4(0, 1, 1, 0));
 	//Window win = Window("Depth of Field", 512, 512, glm::vec4(0, 1, 1, 0));
@@ -58,32 +58,15 @@ int main()
 	
 	Texture texture = Texture("res/horizontally_flipped_grid.jpg", false);
 	win.clear();
-#if 1
-	std::vector<float> frame(3 * win.getWidth() * win.getHeight());
-	int i;
-	for (i = 0; i < 1 * win.getWidth() * win.getHeight(); i++)
-		frame[i + 0] = 1;
-
-	for (; i < 2 * win.getWidth() * win.getHeight(); i++)
-		frame[i + 0] = 0;
 	
-	for (; i < 3 * win.getWidth() * win.getHeight(); i++)
-		frame[i + 0] = 1;
-#else
-	std::vector<float> frame(3 * win.getWidth() * win.getHeight());
-	for (int i = 0; i < 3 * win.getWidth() * win.getHeight(); i += 3)
+	int dim = win.getWidth() * win.getHeight();
+	std::vector<float> frame(3 * dim);
+	for (int i = 0; i < dim; i++)
 	{
-		frame[i + 0] = 1;
-		frame[i + 1] = 1;
-		frame[i + 2] = 0;
+		frame[i + 0 * dim] = 1;
+		frame[i + 1 * dim] = 0;
+		frame[i + 2 * dim] = 1;
 	}
-#endif
-
-
-	//FILE* fp;
-	//fp = fopen(std::string("res/butterfly_" + std::to_string(width) + ".planar").c_str(), "rb");
-	//fread(&frame[0], sizeof(float), 3 * width * height, fp);
-	//fclose(fp);
 
 	shader.bind();
 	shader.setUniform1f("width", win.getWidth());
@@ -99,7 +82,7 @@ int main()
 //		Sending normal map as ssbo
 		glGenBuffers(1, &ssbo);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, 3 * sizeof(float) * win.getWidth() * win.getHeight(), &frame[0], GL_STATIC_DRAW);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, frame.size() * sizeof(float), &frame[0], GL_STATIC_DRAW);
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, ssbo);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
